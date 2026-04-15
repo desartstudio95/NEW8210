@@ -478,6 +478,20 @@ const Dashboard = () => {
 export default function App() {
   const [view, setView] = useState<"pos" | "dashboard">("pos");
   const [lastTx, setLastTx] = useState<Transaction | null>(null);
+  const [configStatus, setConfigStatus] = useState({ flutterwave: false, binance: false, webhook: false });
+
+  useEffect(() => {
+    const checkConfig = async () => {
+      try {
+        const res = await fetch("/api/config-check");
+        const data = await res.json();
+        setConfigStatus(data);
+      } catch (err) {
+        console.error("Config check failed", err);
+      }
+    };
+    checkConfig();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-[#00ff00] selection:text-black">
@@ -534,12 +548,16 @@ export default function App() {
       {/* Global Status Bar (Bottom) */}
       <div className="fixed bottom-0 left-20 right-0 bg-[#111] border-t border-[#222] px-6 py-2 flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-[#444] z-40">
         <div className="flex items-center">
-          <div className="w-2 h-2 bg-[#00ff00] rounded-full mr-2 animate-pulse"></div>
-          System Online: Newland NEW8210 Gateway
+          <div className={`w-2 h-2 rounded-full mr-2 animate-pulse ${configStatus.flutterwave ? "bg-[#00ff00]" : "bg-red-500"}`}></div>
+          System Status: {configStatus.flutterwave ? "NEW8210 Gateway Active" : "Gateway Offline (Check Keys)"}
         </div>
         <div className="flex items-center space-x-6">
-          <span>Flutterwave: Connected</span>
-          <span>Binance: API Ready</span>
+          <span className={configStatus.flutterwave ? "text-[#00ff00]" : "text-red-500"}>
+            Flutterwave: {configStatus.flutterwave ? "Connected" : "Disconnected"}
+          </span>
+          <span className={configStatus.binance ? "text-[#00ff00]" : "text-red-500"}>
+            Binance: {configStatus.binance ? "API Ready" : "API Missing"}
+          </span>
           <span className="text-[#666]">{new Date().toLocaleDateString()}</span>
         </div>
       </div>

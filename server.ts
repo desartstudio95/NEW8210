@@ -31,6 +31,14 @@ async function startServer() {
   const BINANCE_API_SECRET = process.env.BINANCE_API_SECRET || "";
 
   // API Routes
+  app.get("/api/config-check", (req, res) => {
+    res.json({
+      flutterwave: !!FLW_SECRET_KEY,
+      binance: !!BINANCE_API_KEY && !!BINANCE_API_SECRET,
+      webhook: !!FLW_WEBHOOK_HASH
+    });
+  });
+
   app.get("/api/transactions", (req, res) => {
     res.json(Object.values(transactions).sort((a, b) => b.timestamp - a.timestamp));
   });
