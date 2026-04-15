@@ -1,0 +1,6 @@
+{
+  "name": "Enterprise POS & Crypto Settlement",
+  "description": "A professional POS system integrating Flutterwave for payments and Binance for automated crypto settlement.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
